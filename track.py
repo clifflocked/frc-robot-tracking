@@ -1,8 +1,13 @@
+import os
+
 import numpy as np
 import supervision as sv
+from dotenv import load_dotenv
 from inference.models.utils import get_roboflow_model
 
-model = get_roboflow_model(model_id="frc-scouting-application/2", api_key="LleUqOq0BI8fAzfMQGn8")
+load_dotenv()
+
+model = get_roboflow_model(model_id="frc-scouting-application/2", api_key=os.getenv('ROBOFLOW_API_KEY'))
 tracker = sv.ByteTrack()
 box_annotator = sv.BoxAnnotator()
 label_annotator = sv.LabelAnnotator()

@@ -5,6 +5,11 @@ import pandas as pd
 import supervision as sv
 from dotenv import load_dotenv
 from inference.models.utils import get_roboflow_model
+import sys
+
+if (len(sys.argv) != 3):
+    print(f"{sys.argv[0]}: Improper arguments: {sys.argv}\nUsage: {sys.argv[0]} INPUT OUTPUT", file=sys.stderr)
+    exit(1)
 
 load_dotenv()
 
@@ -78,8 +83,8 @@ def callback(frame: np.ndarray, frame_index: int) -> np.ndarray:
 
 
 sv.process_video(
-    source_path='video.mp4',
-    target_path='result.mp4',
+    source_path=sys.argv[1],
+    target_path=sys.argv[2],
     callback=callback
 )
 

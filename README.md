@@ -1,9 +1,9 @@
 # FRC Robot Tracking and Analysis
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11](https://img.shields.io/badge/python-3.11.9-blue.svg)](https://www.python.org/downloads/release/python-3119/)
-[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/qualk/frc-robot-tracking/issues)
-[![GitHub issues](https://img.shields.io/github/issues/qualk/frc-robot-tracking.svg)](https://github.com/qualk/frc-robot-tracking/issues)
-[![GitHub stars](https://img.shields.io/github/stars/qualk/frc-robot-tracking.svg)](https://github.com/qualk/frc-robot-tracking/stargazers)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/clifflocked/frc-robot-tracking/issues)
+[![GitHub issues](https://img.shields.io/github/issues/qualk/frc-robot-tracking.svg)](https://github.com/clifflocked/frc-robot-tracking/issues)
+[![GitHub stars](https://img.shields.io/github/stars/qualk/frc-robot-tracking.svg)](https://github.com/clifflocked/frc-robot-tracking/stargazers)
 
 ## Overview
 
@@ -39,7 +39,7 @@ This project aims to track and analyse robots in FIRST Robotics Competition (FRC
    Then activate the environment (regardless of the option).
    
    If you are using Windows, use `venv\Scripts\activate`. <br>
-   If using Linux or MacOS, use `source venv/bin/activate`. This might differ based on your shell.
+   If using Linux or MacOS, use `source .venv/bin/activate`. This might differ based on your shell.
 
 3. Install the required packages:
 
@@ -47,7 +47,7 @@ This project aims to track and analyse robots in FIRST Robotics Competition (FRC
     uv pip install -r requirements.txt
     ```
 
-4. Copy the `.env.example` file to `.env` and fill in your API keys.
+4. Copy the `.env.example` file to `.env` and fill in your Roboflow and TBA API keys.
 
 ## Usage
 
@@ -55,7 +55,7 @@ This project aims to track and analyse robots in FIRST Robotics Competition (FRC
 
 To track robots in a video:
 ```bash
-python bytetrack.py
+python bytetrack.py video.mp4 result.mp4
 ```
 
 This script uses box annotator, trace annotator, and label annotator to mark detected robots in the video.

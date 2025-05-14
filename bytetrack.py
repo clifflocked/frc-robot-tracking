@@ -5,7 +5,16 @@ import pandas as pd
 import supervision as sv
 from dotenv import load_dotenv
 from inference.models.utils import get_roboflow_model
+
+
 import sys
+from contextlib import contextmanager,redirect_stderr,redirect_stdout
+
+@contextmanager
+def redirect_out():
+    with open("log.txt", 'w') as file:
+        with redirect_stderr(file) as err, redirect_stdout(file) as out:
+            yield (err, out)
 
 if (len(sys.argv) != 3):
     print(f"{sys.argv[0]}: Improper arguments: {sys.argv}\nUsage: {sys.argv[0]} INPUT OUTPUT", file=sys.stderr)
@@ -13,7 +22,8 @@ if (len(sys.argv) != 3):
 
 load_dotenv()
 
-model = get_roboflow_model(model_id="frc-scouting-application/2", api_key=os.getenv('ROBOFLOW_API_KEY'))
+with redirect_out(): # get_roboflow_model will complain about not having inference[*], so make it shut up
+    model = get_roboflow_model(model_id="frc-scouting-application/2", api_key=os.getenv('ROBOFLOW_API_KEY'))
 tracker = sv.ByteTrack()
 box_annotator = sv.BoxAnnotator()
 label_annotator = sv.LabelAnnotator()
@@ -90,3 +100,5 @@ sv.process_video(
 
 # Save results to CSV after processing the video
 pd.DataFrame(results_list).to_csv('tracking_results.csv', index=False)
+
+print(object_data)

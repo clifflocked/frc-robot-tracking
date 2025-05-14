@@ -9,6 +9,7 @@ from time import time
 from math import floor
 import sys
 from contextlib import contextmanager,redirect_stderr,redirect_stdout
+from cv2 import VideoCapture, CAP_PROP_FRAME_COUNT
 
 @contextmanager
 def redirect_out():
@@ -35,12 +36,17 @@ object_data = {}
 # List to store results for CSV
 results_list = []
 
+cap = VideoCapture(sys.argv[1])
+totalframes = int(cap.get(CAP_PROP_FRAME_COUNT))
+
+currentframe = 0
 starttime = time()
 frametime = floor(starttime * 1000)
+frametimes = []
 
 def callback(frame: np.ndarray, frame_index: int) -> np.ndarray:
     global object_data
-    global frametime
+    global frametime, currentframe, totalframes
     results = model.infer(frame)[0]
     detections = sv.Detections.from_inference(results)
     detections = tracker.update_with_detections(detections)
@@ -92,9 +98,11 @@ def callback(frame: np.ndarray, frame_index: int) -> np.ndarray:
             })
 
     annotated_frame = box_annotator.annotate(frame.copy(), detections = detections)
-    sys.stdout.flush()
-    print(f"Frame time: {floor(time() * 1000) - frametime}ms{' ' * 15}", end="\r")
-    frametime = floor(time() * 1000)
+    mstime = floor(time() * 1000)
+    print(f"Frame {currentframe}/{totalframes} time: {mstime - frametime}ms{' ' * 15}", end="\r")
+    frametimes.append(mstime - frametime)
+    frametime = mstime
+    currentframe += 1
     return label_annotator.annotate(
         annotated_frame, detections=detections, labels=labels)
 
@@ -108,4 +116,4 @@ sv.process_video(
 # Save results to CSV after processing the video
 pd.DataFrame(results_list).to_csv('tracking_results.csv', index=False)
 
-print(f"Total runtime: {floor(time() - starttime)} secs")
+print(f"\nTotal runtime: {floor(time() - starttime)} secs\nAverage time: {floor(np.average(frametimes))}ms")

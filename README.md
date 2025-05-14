@@ -49,6 +49,12 @@ This project aims to track and analyse robots in FIRST Robotics Competition (FRC
 
 4. Copy the `.env.example` file to `.env` and fill in your Roboflow and TBA API keys.
 
+### GPU support
+In order to use a dedicated NVIDIA GPU, make sure that you have installed CUDA:
+```bash
+sudo apt install nvidia-cuda-toolkit cudnn9-cuda-12 libcudnn9-cuda-12
+```
+
 ## Usage
 
 ### Robot Tracking

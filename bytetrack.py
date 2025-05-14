@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 import supervision as sv
 from dotenv import load_dotenv
-from inference.models.utils import get_roboflow_model
 
 from time import time
 from math import floor
@@ -24,6 +23,7 @@ if (len(sys.argv) != 3):
 load_dotenv()
 
 with redirect_out(): # get_roboflow_model will complain about not having inference[*], so make it shut up
+    from inference.models.utils import get_roboflow_model
     model = get_roboflow_model(model_id="frc-scouting-application/2", api_key=os.getenv('ROBOFLOW_API_KEY'))
 tracker = sv.ByteTrack()
 box_annotator = sv.BoxAnnotator()
@@ -108,4 +108,4 @@ sv.process_video(
 # Save results to CSV after processing the video
 pd.DataFrame(results_list).to_csv('tracking_results.csv', index=False)
 
-print(object_data)
+print(f"Total runtime: {floor(time() - starttime)} secs")

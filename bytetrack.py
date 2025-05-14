@@ -6,7 +6,8 @@ import supervision as sv
 from dotenv import load_dotenv
 from inference.models.utils import get_roboflow_model
 
-
+from time import time
+from math import floor
 import sys
 from contextlib import contextmanager,redirect_stderr,redirect_stdout
 
@@ -34,9 +35,12 @@ object_data = {}
 # List to store results for CSV
 results_list = []
 
+starttime = time()
+frametime = floor(starttime * 1000)
 
 def callback(frame: np.ndarray, frame_index: int) -> np.ndarray:
     global object_data
+    global frametime
     results = model.infer(frame)[0]
     detections = sv.Detections.from_inference(results)
     detections = tracker.update_with_detections(detections)
@@ -88,6 +92,9 @@ def callback(frame: np.ndarray, frame_index: int) -> np.ndarray:
             })
 
     annotated_frame = box_annotator.annotate(frame.copy(), detections = detections)
+    sys.stdout.flush()
+    print(f"Frame time: {floor(time() * 1000) - frametime}ms{' ' * 15}", end="\r")
+    frametime = floor(time() * 1000)
     return label_annotator.annotate(
         annotated_frame, detections=detections, labels=labels)
 

@@ -95,8 +95,9 @@ def callback(frame: np.ndarray, frame_index: int) -> np.ndarray:
 
         if not found_robot: # Tracker not yet in a team, so see if we're close enough to add ourselves to the closest robot.
             if (closest_distance <= 50 or len(robots) == 6): # Add ourselves to that robot
+                closest_robot['ids'].append(tracker_id)  # Actually add the tracker_id to the robot's ids list
                 closest_robot['locations'].append({'frame_index': frame_index, 'position': current_position})
-                labels[current_box % len(labels)] += f"{robots.index(closest_robot)}"
+                labels[current_box % len(labels)] += f" {robots.index(closest_robot)}"
             else: # Free team spot, and we're far away! Let's make our own!
                 robots.append({'ids': [tracker_id], 'team': len(robots), 'locations': [{'frame_index': frame_index, 'position': current_position}]})
                 labels[current_box % len(labels)] += f" {len(robots)}"
@@ -142,7 +143,7 @@ def callback(frame: np.ndarray, frame_index: int) -> np.ndarray:
 
     annotated_frame = box_annotator.annotate(frame.copy(), detections = detections)
     mstime = floor(time() * 1000)
-    print(f"Frame {currentframe}/{totalframes} time: {mstime - frametime}ms{' ' * 15}, label: {labels}", end="\r")
+    print(f"Frame {currentframe}/{totalframes} time: {mstime - frametime}ms{' ' * 15}", end="\r")
     frametimes.append(mstime - frametime)
     frametime = mstime
     currentframe += 1
